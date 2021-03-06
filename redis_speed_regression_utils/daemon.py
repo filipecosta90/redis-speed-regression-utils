@@ -115,10 +115,7 @@ def main():
             command.extend(["taskset", "-c", args.taskset_redis_benchmark])
         command.extend([executable_path])
         command.extend(["-p", "{}".format(port)])
-        command.extend(["-d", "256"])
-        command.extend(["--threads", "3"])
-        # we need the csv output
-        command.extend(["--csv", "-e", "-n", "1000000"])
+        command.extend(["-d", "256","--threads", "3","--csv", "-e", "-n", "1000000","-t","set,get,hset,sadd,zadd"])
         logging.info(
             "Running redis-benchmark with the following args: {}".format(
                 " ".join(command)
