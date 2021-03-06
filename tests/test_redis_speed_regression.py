@@ -1,4 +1,4 @@
-from redis_speed_regression import __version__
+from redis_speed_regression_utils import __version__
 
 
 def test_version():

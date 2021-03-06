@@ -10,8 +10,8 @@ from contextlib import closing
 import redis
 
 # logging settings
-from redis_speed_regression.redis_benchmark_wrapper import redis_benchmark_from_stdout_csv_to_json
-from redis_speed_regression.redis_standalone import spinUpLocalRedis, isProcessAlive
+from redis_speed_regression_utils.redis_benchmark_wrapper import redis_benchmark_from_stdout_csv_to_json
+from redis_speed_regression_utils.redis_standalone import spinUpLocalRedis, isProcessAlive
 
 logging.basicConfig(
     format="%(asctime)s %(levelname)-4s %(message)s",
