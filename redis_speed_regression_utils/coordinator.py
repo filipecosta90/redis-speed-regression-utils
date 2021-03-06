@@ -54,8 +54,8 @@ def main():
         for tag in repo.tags:
 
             if semantic_version.validate(tag.name) and "-" not in tag.name:
-                if semantic_version.Version(tag.name).major >= 6:
-                    officialVersions.append(tag)
+                # if semantic_version.Version(tag.name).major >= 6:
+                officialVersions.append(tag)
 
         logging.info("Will trigger {} distinct version tests by version: {}.".format(len(officialVersions), ",".join(
             [x.name for x in officialVersions])))
