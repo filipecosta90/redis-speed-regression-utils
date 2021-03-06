@@ -132,7 +132,7 @@ def main():
             with open('{}.csv'.format(testname), mode='a') as file_:
                 rps = results["rps"]
                 p50_latency_ms = results["p50_latency_ms"]
-                file_.write("{},{},{},{},{}".format(tag, commit, commited_date, rps, p50_latency_ms))
+                file_.write("{},{},{},{},{}\n".format(tag, commit, commited_date, rps, p50_latency_ms))
         redis_process.kill()
         redisMgtClient.xack(stream, consumerGroup, streamId)
     if cleanUp is True:
