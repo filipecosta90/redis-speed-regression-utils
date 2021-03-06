@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "redis-speed-regression-utils"
+version = "0.1.0"
+description = "Redis benchmark regression helper utilities."
+authors = ["filipecosta90 <filipecosta.90@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.6.1"
+redis = "^3.5.3"
+semantic-version = "^2.8.5"
+GitPython = "^3.1.14"
+
+[tool.poetry.dev-dependencies]
+pytest = "^4.6"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+redis-speed-regression-d = "redis_speed_regression_utils.daemon:main"
+redis-speed-regression-coordinator = "redis_speed_regression_utils.coordinator:main"
