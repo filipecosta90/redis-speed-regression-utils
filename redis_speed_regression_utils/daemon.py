@@ -88,8 +88,11 @@ def main():
 
         cmd = "cd {}\n".format(redisDirPath)
         cmd += "git checkout {}\n".format(commit)
-        cmd += "make distclean\n"
-        cmd += "make redis-server -j\n"
+        taskset_make = ""
+        if args.taskset_redis:
+            taskset_make = "taskset -c {} ".format(args.taskset_redis)
+        cmd += "{}make distclean\n".format(taskset_make)
+        cmd += "{}make redis-server\n".format(taskset_make)
         process = subprocess.Popen('/bin/bash', stdin=subprocess.PIPE, stdout=subprocess.PIPE)
         out, err = process.communicate(cmd.encode())
         if process.returncode != 0:
