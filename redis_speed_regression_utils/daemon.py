@@ -118,7 +118,7 @@ def main():
             command.extend(["taskset", "-c", args.taskset_redis_benchmark])
         command.extend([executable_path])
         command.extend(["-p", "{}".format(port)])
-        command.extend(["-d", "256","--threads", "3","--csv", "-e", "-n", "1000000","-t","set,get,hset,sadd,zadd"])
+        command.extend(["-d", "256","--threads", "3","--csv", "-e", "-n", "10000000","-t","set,get,hset,sadd,zadd"])
         logging.info(
             "Running redis-benchmark with the following args: {}".format(
                 " ".join(command)
@@ -132,9 +132,9 @@ def main():
             local_benchmark_output_filename))
         results_dict = redis_benchmark_from_stdout_csv_to_json(stdout, tag, commit, commited_date)
         for testname, results in results_dict["Tests"].items():
+            rps = results["rps"]
+            p50_latency_ms = results["p50_latency_ms"]
             with open('{}.csv'.format(testname), mode='a') as file_:
-                rps = results["rps"]
-                p50_latency_ms = results["p50_latency_ms"]
                 file_.write("{},{},{},{},{}\n".format(tag, commit, commited_date, rps, p50_latency_ms))
         redis_process.kill()
         redisMgtClient.xack(stream, consumerGroup, streamId)
