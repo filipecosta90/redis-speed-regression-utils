@@ -1,5 +1,6 @@
 import argparse
 import logging
+import random
 import shutil
 import subprocess
 import tempfile
@@ -71,15 +72,17 @@ def main():
         redisMgtClient = redis.StrictRedis(host=args.redis_mgt_host, port=args.redis_mgt_port,
                                            password=args.redis_mgt_pass,
                                            decode_responses=True)
-        for tag in officialVersions:
-            for rep in range(0, 3):
+        for rep in range(0, 5):
+            random.shuffle(officialVersions)
+            for tag in officialVersions:
                 redisMgtClient.xadd(stream, {'commit': tag.commit.hexsha, 'committed-date': tag.commit.committed_date,
                                              'tag': tag.name,
                                              'benchmark-tool': "redis-benchmark",
                                              'setup': "oss-standalone"})
 
-        for commit in Commits:
-            for rep in range(0, 3):
+        for rep in range(0, 5):
+            random.shuffle(officialVersions)
+            for commit in Commits:
                 redisMgtClient.xadd(stream,
                                     {'commit': commit.hexsha, 'committed-date': commit.committed_date, 'tag': "",
                                      'benchmark-tool': "redis-benchmark",
