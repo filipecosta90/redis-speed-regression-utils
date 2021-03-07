@@ -37,6 +37,7 @@ def main():
     parser.add_argument("--redis_mgt_pass", type=str, default=None)
     parser.add_argument("--redis_repo", type=str, default=None)
     parser.add_argument("--taskset-redis", type=str, default=None)
+    parser.add_argument("--taskset-make", type=str, default=None)
     parser.add_argument("--taskset-redis-benchmark", type=str, default=None)
     args = parser.parse_args()
 
@@ -89,10 +90,10 @@ def main():
         cmd = "cd {}\n".format(redisDirPath)
         cmd += "git checkout {}\n".format(commit)
         taskset_make = ""
-        if args.taskset_redis:
-            taskset_make = "taskset -c {} ".format(args.taskset_redis)
+        if args.taskset_make:
+            taskset_make = "taskset -c {} ".format(args.taskset_make)
         cmd += "{}make distclean\n".format(taskset_make)
-        cmd += "{}make redis-server\n".format(taskset_make)
+        cmd += "{}make redis-server -j 3\n".format(taskset_make)
         process = subprocess.Popen('/bin/bash', stdin=subprocess.PIPE, stdout=subprocess.PIPE)
         out, err = process.communicate(cmd.encode())
         if process.returncode != 0:
@@ -118,7 +119,7 @@ def main():
             command.extend(["taskset", "-c", args.taskset_redis_benchmark])
         command.extend([executable_path])
         command.extend(["-p", "{}".format(port)])
-        command.extend(["-d", "256","--threads", "3","--csv", "-e", "-n", "10000000","-t","set,get,hset,sadd,zadd"])
+        command.extend(["-d", "256", "--threads", "2", "--csv", "-e", "-n", "5000000", "-t", "set,get,hset,sadd,zadd"])
         logging.info(
             "Running redis-benchmark with the following args: {}".format(
                 " ".join(command)
@@ -126,10 +127,7 @@ def main():
         )
         benchmark_client_process = subprocess.Popen(args=command, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
         (stdout, sterr) = benchmark_client_process.communicate(cmd.encode())
-        local_benchmark_output_filename = "1.json"
         logging.info("Extracting the benchmark results")
-        logging.info("Converting redis-benchmark output to json. Storing it in: {}".format(
-            local_benchmark_output_filename))
         results_dict = redis_benchmark_from_stdout_csv_to_json(stdout, tag, commit, commited_date)
         for testname, results in results_dict["Tests"].items():
             rps = results["rps"]

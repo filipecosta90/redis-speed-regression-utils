@@ -72,15 +72,18 @@ def main():
                                            password=args.redis_mgt_pass,
                                            decode_responses=True)
         for tag in officialVersions:
-            redisMgtClient.xadd(stream, {'commit': tag.commit.hexsha, 'committed-date': tag.commit.committed_date,
-                                         'tag': tag.name,
-                                         'benchmark-tool': "redis-benchmark",
-                                         'setup': "oss-standalone"})
+            for rep in range(0, 3):
+                redisMgtClient.xadd(stream, {'commit': tag.commit.hexsha, 'committed-date': tag.commit.committed_date,
+                                             'tag': tag.name,
+                                             'benchmark-tool': "redis-benchmark",
+                                             'setup': "oss-standalone"})
 
         for commit in Commits:
-            redisMgtClient.xadd(stream, {'commit': commit.hexsha, 'committed-date': commit.committed_date, 'tag': "",
-                                         'benchmark-tool': "redis-benchmark",
-                                         'setup': "oss-standalone"})
+            for rep in range(0, 3):
+                redisMgtClient.xadd(stream,
+                                    {'commit': commit.hexsha, 'committed-date': commit.committed_date, 'tag': "",
+                                     'benchmark-tool': "redis-benchmark",
+                                     'setup': "oss-standalone"})
 
     else:
         logging.info("Skipping actual work trigger ( dry-run )")
